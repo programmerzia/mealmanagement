@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block page_title %}Dashboard{% endblock %}
+{% block breadcrumb %}Update Fund{% endblock %}
+{% block title_tag %}Smile is nothing but zero {% endblock %}
+{% block content %}
+	<div class="row">
+		<div class="col-md-12">
+			{% if messages %}
+			{% for message in messages %}
+			<div class="alert alert-success">Your fund has been added</div>
+			{% endfor %}
+			{% endif %}
+			<div class="form-group">
+				<form method="post">
+					{% csrf_token %}
+					{{ form|crispy }}
+					<button type="submit" class="btn btn-primary">Update Fund</button>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block script %}
+<script>
+  $(function() {
+    $( ".datepicker" ).datepicker({
+      changeMonth: true,
+      changeYear: true,
+      yearRange: "2017:2019",
+      todayHighlight: true,
+      dateFormat: "yy-mm-dd"
+      // You can put more options here.
+    });
+  });
+  </script>
+ {% endblock %} 

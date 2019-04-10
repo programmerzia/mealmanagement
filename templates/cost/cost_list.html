@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block page_title %}Dashboard{% endblock %}
+{% block breadcrumb %}Member List{% endblock %}
+{% block title_tag %}Smile is nothing but zero {% endblock %}
+{% block content %}
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-6">
+					<h3 class="page-header">Showing cost for {{ today|date:"F, Y" }}</h3>
+				</div>
+				<div class="col-md-6">
+					<form class="form-inline" method="post" action="{% url 'search_cost' %}">
+						{% csrf_token %}
+						<div class="form-group">
+							<label for="">Select a Date :</label>
+							<input type="text" name="selected_date" class="datepicker form-control" required placeholder="dd/mm/yyyy">
+						</div>
+						<button type="submit" class="btn btn-primary">Search</button>
+					</form>
+				</div>
+			</div>
+			{% if messages %}
+			{% for message in messages %}
+			<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+			{% endfor %}
+			{% endif %}
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>S.N</th>
+						<th>Cost Date</th>
+						<th>Cost By</th>
+						<th>Amount</th>
+						<th>Comment</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% if costs.count is 0 %}
+					<tr>
+						<td colspan="6" align="center"> No Member added yet !</td>
+					</tr>	
+					{% else %}
+					{% for cost in costs %}
+						<tr>
+							<td> {{forloop.counter}} </td>
+							<td> {{cost.cost_date }} </td>
+							<td> {{ cost.user.first_name }} {{ cost.user.last_name }} [{{ cost.user.username }}]</td>
+							<td>{{ cost.amount }}</td>
+							<td>{{ cost.comment }}</td>
+							<td><a href="{% url 'delete_cost' cost.id %}" onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i></a></td>
+						</tr>
+					{% endfor %}
+					{% endif %}
+					{% if total %}
+					<tr>
+						<td colspan="3" align="right"><b>Total Cost :</b> </td>
+						<td colspan="4" align="left"><b>{{ total.amount }}</b></td>
+					</tr>
+					{% endif %}
+				</tbody>
+			</table>
+			<span class="pagination">
+				{% if costs.has_previous %}
+				<span class="link-steps">
+					<a href="?page=1">First </a>
+					<a href="?page={{ costs.previous_page_number }}">&laquo;</a>
+				</span>
+				{% endif %}
+				<span class="current">
+					Page {{ costs.number }} of {{ costs.paginator.num_pages }}
+				</span>
+				{% if costs.has_next %}
+				<span class="link-steps">
+					<a href="?page={{ costs.next_page_number }}">&raquo;</a>
+					<a href="?page={{ costs.paginator.num_pages }}">last</a>
+				</span>
+				{% endif %}
+			</span>
+		</div>
+	</div>
+{% endblock %}
+{% block script %}
+<script>
+  $(function() {
+    $( ".datepicker" ).datepicker({
+      changeMonth: true,
+      changeYear: true,
+      yearRange: "2017:2019",
+      todayHighlight: true,
+      format: "dd-mm-yyyy",
+      // You can put more options here.
+    });
+  });
+  </script>
+ {% endblock %} 

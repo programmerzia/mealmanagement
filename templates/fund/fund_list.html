@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block page_title %}Dashboard{% endblock %}
+{% block breadcrumb %}Fund List{% endblock %}
+{% block title_tag %}Smile is nothing but zero {% endblock %}
+{% block content %}
+	<div class="row">
+		<div class="col-md-12">
+                <div class="row">
+                        <div class="col-md-6">
+                            <h3 class="page-header">Showing fund summary for {{ today|date:"F, Y" }}</h3>
+                        </div>
+                        <div class="col-md-6">
+                            <form class="form-inline" method="post" action="{% url 'search_fund' %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="">Select a Date :</label>
+                                    <input type="text" name="selected_date" class="datepicker form-control" required placeholder="dd/mm/yyyy">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </form>
+                        </div>
+                    </div>
+			{% if messages %}
+			{% for message in messages %}
+			<div class="alert alert-success">Your fund has been modified</div>
+			{% endfor %}
+			{% endif %}
+			<table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>S.N</th>
+                        <th>Name</th>
+                        <th>Fund</th>
+                        <th>Date Deposited</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fund in funds %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ fund.user.first_name }} {{ fund.user.last_name }}</td>
+                        <td>{{ fund.amount }}</td>
+                        <td>{{ fund.fund_date }}</td>
+                        <td>
+                            <a href="{% url 'edit_fund' fund.id %}" class="btn btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+                            <a href="{% url 'delete_fund' fund.id %}" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+		</div>
+	</div>
+{% endblock %}
+{% block script %}
+<script>
+  $(function() {
+    $( ".datepicker" ).datepicker({
+      changeMonth: true,
+      changeYear: true,
+      yearRange: "2017:2019",
+      todayHighlight: true,
+      dateFormat: "yy-mm-dd"
+      // You can put more options here.
+    });
+  });
+  </script>
+ {% endblock %} 
